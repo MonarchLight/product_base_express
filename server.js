@@ -2,10 +2,12 @@
 
 import express from "express";
 import mongoose from 'mongoose';
+import helmet from "helmet";
+import cors from "cors";
 
 import { config } from './config.js';
 import { logger } from './logger/logger.js';
-import { router } from './routes/item-router.js';
+import { router } from './routes/product-router.js';
 import { errorMiddlewares } from './middlewares/error-middleware.js';
 
 
@@ -14,7 +16,10 @@ mongoose.set('strictQuery', false);
 const PORT = config.PORT || 3000;
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ limit: '25mb' }));
+app.use(helmet());
+app.use(cors());
 app.use('/api', router);
 
 app.use(errorMiddlewares);
