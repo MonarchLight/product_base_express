@@ -1,18 +1,16 @@
 "use strict";
 
-import dateFormat from "dateformat";
-
-
 import { productModel } from "../models/product-model.js";
 import { productHistoryModel } from "../models/product-history-model.js";
 
+import { reqImage } from './cloudinary-service.js';
+
 import { config } from '../config.js';
-import { ApiError } from "../exceptions/api-error.js";
 import { ProductDto } from '../dtos/product-dto.js';
 
 function errors(arg, message) {
-    if (arg) {
-        throw new ApiError(404, message, 'null');
+    if (!arg) {
+        throw new Error(message);
     }
 }
 
@@ -27,6 +25,10 @@ async function historyCreate(type, change) {
 export const addProduct = async (isActive, image, name, count, weightPerItem, pricePerItem, description) => {
     const nameProduct = await productModel.findOne({ name });
     errors(nameProduct, 'You already have this product.');
+
+    if (image) {
+        image = reqImage();
+    }
 
     const historyProduct = await historyCreate('Add product', `Add product ${name}`);
 
@@ -54,8 +56,7 @@ export const updateProduct = async (id, isActive, image, name, count, weightPerI
 
 export const deleteProduct = async (id) => {
     const product = await productModel.findByIdAndRemove(id);
-    // console.log(product);
-    errors(!product, 'Required product not found.');
+    errors(product, 'Required product not found.');
     return product;
 };
 
@@ -68,4 +69,10 @@ export const getAllProducts = async () => {
 export const getAllProductsHistory = async () => {
     const productsHistory = await productHistoryModel.find({});
     return productsHistory;
+};
+
+export const getProduct = async (id) => {
+    const product = await productModel.findById(id);
+    errors(product, 'Required product not found.');
+    return product;
 };

@@ -87,6 +87,19 @@ const router = new Router();
 }
  */
 
+import { reqImage } from '../service/cloudinary-service.js';
+
+const image = async (req, res) => {
+
+
+    //console.log(req.files.image.data.toString('base64'));
+    const result = await reqImage(req.files.image.data);
+
+    console.log(result);
+
+    return res.json(result);
+}
+
 router.post('/product', [
     check('isActive', '`Active` must be true or false.').optional().isBoolean(),
     check('image', '`Image` must be string.').optional().isString(),
@@ -119,4 +132,9 @@ router.post('/product', [
 
 
 
+    .get('/product/:id', controller.getProduct)
+
+    .post('/image', image)
+
     .delete('/product/:id', controller.deleteProduct);
+
