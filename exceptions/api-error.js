@@ -2,17 +2,18 @@
 
 export class ApiError extends Error {
     status;
+    payload;
     errors;
 
-    constructor(status, message, errors = []) {
+    constructor(status, message, payload, errors = []) {
         super(message);
         this.status = status;
+        this.payload = payload;
         this.errors = errors;
-
     }
 
+    static AddProductBadRequest(message, payload, errors = []) {
 
-    static BadRequest(message, errors = []) {
-        return new ApiError(400, message, errors);
+        return new ApiError(400, message, payload, errors);
     }
 }
