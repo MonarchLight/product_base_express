@@ -53,25 +53,26 @@ export const updateProduct = async (id, isActive, image, name, count, weightPerI
 
         historyProduct = await historyCreate('Edit count', `Product ${productOld.name} changed count from ${productOld.count} to ${count}.`);
     } else {
+
         let stringHistoryProduct = "";
 
-        function editHistoryProduct(params, error, message) {
-            if (params) {
-                if (params == productOld[params]) {
+        function editHistoryProduct(newParams, oldParams, error, message) {
+            if (newParams) {
+                if (newParams == oldParams) {
                     throw new Error(error);
                 }
                 stringHistoryProduct = stringHistoryProduct === "" ?
-                    `Product ${productOld.name}:` + message :
+                    `Product ${productOld.name}: ` + message :
                     stringHistoryProduct.concat(`, `, message);
             }
         }
 
-        editHistoryProduct(isActive, "The 'active' is equal to the previous value.", `changed 'active' from ${productOld.isActive} to ${isActive}`);
-        editHistoryProduct(image, "The 'image' is equal to the previous value.", `changed 'image' from ${productOld.image} to ${image}`);
-        editHistoryProduct(name, "The 'name' is equal to the previous value.", `changed 'name' from ${productOld.name} to ${name}`);
-        editHistoryProduct(weightPerItem, "The 'weightPerItem' is equal to the previous value.", `changed 'weightPerItem' from ${productOld.weightPerItem} to ${weightPerItem}`);
-        editHistoryProduct(pricePerItem, "The 'pricePerItem' is equal to the previous value.", `changed 'pricePerItem' from ${productOld.pricePerItem} to ${pricePerItem}`);
-        editHistoryProduct(description, "The 'description' is equal to the previous value.", `changed 'description' from ${productOld.description} to ${description}`);
+        editHistoryProduct(isActive, productOld.isActive, "The 'active' is equal to the previous value.", `changed 'active' from ${productOld.isActive} to ${isActive}`);
+        editHistoryProduct(image, productOld.image, "The 'image' is equal to the previous value.", `changed 'image' from ${productOld.image} to ${image}`);
+        editHistoryProduct(name, productOld.name, "The 'name' is equal to the previous value.", `changed 'name' from ${productOld.name} to ${name}`);
+        editHistoryProduct(weightPerItem, productOld.weightPerItem, "The 'weightPerItem' is equal to the previous value.", `changed 'weightPerItem' from ${productOld.weightPerItem} to ${weightPerItem}`);
+        editHistoryProduct(pricePerItem, productOld.pricePerItem, "The 'pricePerItem' is equal to the previous value.", `changed 'pricePerItem' from ${productOld.pricePerItem} to ${pricePerItem}`);
+        editHistoryProduct(description, productOld.description, "The 'description' is equal to the previous value.", `changed 'description' from ${productOld.description} to ${description}`);
 
         if (stringHistoryProduct != "") {
             historyProduct = await historyCreate('Edit info', stringHistoryProduct);

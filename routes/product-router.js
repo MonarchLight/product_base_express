@@ -90,7 +90,7 @@ router.post('/product', [
     check('isActive', '`Active` must be true or false.').optional().isBoolean(),
     check('image', '`Image` must be string.').optional().isString(),
     check('name', '`Name` can not be empty.').isString().notEmpty(),
-    check('count', '`Count` must be integer.').isInt(), //>0
+    check('count', '`Count` must be integer.').isInt({ gt: 0 }),
     check('weightPerItem', '`Weight` must be no more than 3 characters after the dot.').matches(/^\d+(?:\.\d{1,3})?$/),
     check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').matches(/^\d+(?:\.\d{1,2})?$/),
     check('description', '`Description` must be string.').optional().isString(),

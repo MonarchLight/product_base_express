@@ -4,7 +4,6 @@ import express from "express";
 import mongoose from 'mongoose';
 import helmet from "helmet";
 import cors from "cors";
-//import fileUpload from "express-fileupload";
 
 import { config } from './config.js';
 import { logger } from './logger/logger.js';
@@ -18,14 +17,6 @@ const PORT = config.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-// app.use(
-//     fileUpload({
-//         createParentPath: true,
-//         limits: {
-//             fileSize: 2 * 1024 * 1024 * 1024, //2MB max file(s) size
-//         },
-//     })
-// );
 app.use(helmet());
 app.use(cors());
 app.use('/api', router);
