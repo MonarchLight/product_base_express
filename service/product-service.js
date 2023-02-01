@@ -5,11 +5,8 @@ import { productHistoryModel } from "../models/product-history-model.js";
 
 import { reqImage } from './cloudinary-service.js';
 
-import { config } from '../config.js';
-import { ProductDto } from '../dtos/product-dto.js';
-
 function errors(arg, message) {
-    if (!arg) {
+    if (arg) {
         throw new Error(message);
     }
 }
@@ -26,53 +23,103 @@ export const addProduct = async (isActive, image, name, count, weightPerItem, pr
     const nameProduct = await productModel.findOne({ name });
     errors(nameProduct, 'You already have this product.');
 
-    if (image) {
-        image = reqImage();
-    }
+    name = name[0].toUpperCase() + name.substring(1);
 
-    const historyProduct = await historyCreate('Add product', `Add product ${name}`);
+    if (image) {
+        image = await reqImage(image);
+    }
+    const imageMainUrl = image.split("upload/")[0] + "upload/";
+    const imageLocation = image.split("upload/")[1];
+
+    //console.log(`${imageMainUrl}c_thumb,h_200,w_200/${imageLocation}`);
+
+    const historyProduct = await historyCreate('Add product', `Product ${name}`);
 
     const product = await productModel.create({ isActive, image, name, count, weightPerItem, pricePerItem, description, history: [{ productHistory: historyProduct._id, date: historyProduct.date }] });
     return product;
 };
 
 export const updateProduct = async (id, isActive, image, name, count, weightPerItem, pricePerItem, description) => {
+    if (id.length != 24) throw new Error("Product 'Id' not valid.");
 
-    const nameProduct = await productModel.findOne({ name });
-    errors(nameProduct, 'You already have this product.');
+    const productOld = await productModel.findById(id);
 
+    let historyProduct = {};
 
-    const oldProduct = await productModel.findOne({ id });
-    console.log(oldProduct);
+    if (count) {
+        if (count == productOld.count) {
+            throw new Error("The 'count' is equal to the previous value.");
+        }
+
+        historyProduct = await historyCreate('Edit count', `Product ${productOld.name} changed count from ${productOld.count} to ${count}.`);
+    } else {
+        let stringHistoryProduct = "";
+
+        function editHistoryProduct(params, error, message) {
+            if (params) {
+                if (params == productOld[params]) {
+                    throw new Error(error);
+                }
+                stringHistoryProduct = stringHistoryProduct === "" ?
+                    `Product ${productOld.name}:` + message :
+                    stringHistoryProduct.concat(`, `, message);
+            }
+        }
+
+        editHistoryProduct(isActive, "The 'active' is equal to the previous value.", `changed 'active' from ${productOld.isActive} to ${isActive}`);
+        editHistoryProduct(image, "The 'image' is equal to the previous value.", `changed 'image' from ${productOld.image} to ${image}`);
+        editHistoryProduct(name, "The 'name' is equal to the previous value.", `changed 'name' from ${productOld.name} to ${name}`);
+        editHistoryProduct(weightPerItem, "The 'weightPerItem' is equal to the previous value.", `changed 'weightPerItem' from ${productOld.weightPerItem} to ${weightPerItem}`);
+        editHistoryProduct(pricePerItem, "The 'pricePerItem' is equal to the previous value.", `changed 'pricePerItem' from ${productOld.pricePerItem} to ${pricePerItem}`);
+        editHistoryProduct(description, "The 'description' is equal to the previous value.", `changed 'description' from ${productOld.description} to ${description}`);
+
+        if (stringHistoryProduct != "") {
+            historyProduct = await historyCreate('Edit info', stringHistoryProduct);
+        }
+    }
 
     const product = await productModel.findByIdAndUpdate(id, { isActive, image, name, count, weightPerItem, pricePerItem, description }, { new: true });
 
-    //product.push({ productHistory: historyProduct._id, date: historyProduct.date });
-    // product.save();
+    product.history.push({ productHistory: historyProduct._id, date: historyProduct.date });
+    product.save();
 
-    // console.log(product);
     return product;
 };
 
 export const deleteProduct = async (id) => {
+    if (id.length != 24) throw new Error("Product 'Id' not valid.");
+
     const product = await productModel.findByIdAndRemove(id);
-    errors(product, 'Required product not found.');
+    errors(!product, 'Required product not found.');
+
+    await historyCreate('Delete', `Product ${product.name}.`);
+
     return product;
 };
 
 export const getAllProducts = async () => {
     const products = await productModel.find({});
-    errors(products, 'No payload.');
+    if (Object.keys(products).length === 0) {
+        throw new Error('No payload.');
+    }
+
     return products;
 };
 
 export const getAllProductsHistory = async () => {
     const productsHistory = await productHistoryModel.find({});
+    if (Object.keys(productsHistory).length === 0) {
+        throw new Error('No payload.');
+    }
+
     return productsHistory;
 };
 
 export const getProduct = async (id) => {
+    if (id.length != 24) throw new Error("Product 'Id' not valid.");
+
     const product = await productModel.findById(id);
-    errors(product, 'Required product not found.');
+    errors(!product, 'Required product not found.');
+
     return product;
 };

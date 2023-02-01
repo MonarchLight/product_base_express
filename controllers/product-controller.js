@@ -34,6 +34,7 @@ export const updateProduct = async (req, res, next) => {
         }
 
         const { id } = req.params;
+
         const productData = await productService.updateProduct(id, isActive, image, name, count, weightPerItem, pricePerItem, description);
 
         return res.status(201).json({ status: true, error: null, payload: productData });

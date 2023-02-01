@@ -23,9 +23,9 @@ const uploadImage = async (imagePath) => {
 
     try {
         // Upload the image
-        const result = await cloudinary.uploader.upload_stream(imagePath, options);
+        const result = await cloudinary.uploader.upload(imagePath, options);
         //console.log(result);
-        return result.public_id;
+        return result.url;
     } catch (error) {
         console.error(error);
     }
@@ -48,30 +48,31 @@ const uploadImage = async (imagePath) => {
 //     }
 // };
 
-const createImageTag = (publicId, ...colors) => {
+// const createImageTag = (publicId) => {
 
-    // // Set the effect color and background color
-    // const [effectColor, backgroundColor] = colors;
+//     // // Set the effect color and background color
+//     // const [effectColor, backgroundColor] = colors;
 
-    // Create an image tag with transformations applied to the src URL
-    let imageTag = cloudinary.image(publicId, {
-        transformation: [
-            { height: 150, width: 150, crop: "thumb" },
-        ],
-    });
+//     // Create an image tag with transformations applied to the src URL
+//     let imageTag = cloudinary.image(publicId, {
+//         transformation: [
+//             { height: 150, width: 150, crop: "thumb" },
+//         ],
+//     });
 
-    return imageTag;
-};
+//     return imageTag;
+// };
 
-export const reqImage = async (imagePath) => {
+export const reqImage = async (image) => {
 
     // Upload the image
-    const publicId = await uploadImage(imagePath);
+    const result = await uploadImage(image);
 
     // Get the colors in the image
     // const colors = await getAssetInfo(publicId);
 
     // Create an image tag, using two of the colors in a transformation
-    return await createImageTag(publicId); //, colors[0][0], colors[1][0]
+    //const result = await createImageTag(publicId); //, colors[0][0], colors[1][0]
 
+    return result;
 };
