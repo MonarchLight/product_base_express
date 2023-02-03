@@ -95,6 +95,9 @@ router.post('/product', [
     check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').matches(/^\d+(?:\.\d{1,2})?$/),
     check('description', '`Description` must be string.').optional().isString(),
 ], controller.addProduct)
+    .get('/', (req, res) => {
+        return res.sendFile('../doc/index.html')
+    })
 
     /** /api/product/:id Update product
     * @api {put} /api/product/:id Update product
@@ -103,6 +106,7 @@ router.post('/product', [
     * @apiGroup Product
     * @apiDescription Update product
     *
+    * @apiParam {String} id The product ID to update
     * @apiBody {Boolean} isActive Switches, optional. (default: false)
     * @apiBody {String} image Photo URL, optional. (default: "")
     * @apiBody {String} name Product name optional. (unique)
@@ -157,7 +161,7 @@ router.post('/product', [
         check('isActive', '`Active` must be true or false.').optional().isBoolean(),
         check('image', '`Image` must be string.').optional().isString(),
         check('name', '`Name` can not be empty.').optional().isString().notEmpty(),
-        check('count', '`Count` must be integer.').optional().isInt(), //>0
+        check('count', '`Count` must be integer.').optional().isInt({ gt: 0 }),
         check('weightPerItem', '`Weight` must be no more than 3 characters after the dot.').optional().matches(/^\d+(?:\.\d{1,3})?$/),
         check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').optional().matches(/^\d+(?:\.\d{1,2})?$/),
         check('description', '`Description` must be string.').optional().isString(),
@@ -280,6 +284,7 @@ router.post('/product', [
     * @apiGroup Product
     * @apiDescription Get product
     *
+    * @apiParam {String} id The product ID to get
     * @apiSuccess {json} Object Object with status, errors[{}], payload
     * @apiSuccessExample {json} Success-Response:
        HTTP/1.1 201 OK
@@ -326,13 +331,14 @@ router.post('/product', [
 
     .get('/product/:id', controller.getProduct)
 
-    /** /api/product/:id' Delete product
-    * @api {delete} /api/product/:id' Delete product
+    /** /api/product/:id Delete product
+    * @api {delete} /api/product/:id Delete product
     * @apiVersion 1.0.0
     * @apiName DeleteProduct
     * @apiGroup Product
     * @apiDescription Delete product
     *
+    * @apiParam {String} id The product ID to delete
     * @apiSuccess {json} Object Object with status, errors[{}], payload
     * @apiSuccessExample {json} Success-Response:
        HTTP/1.1 201 OK

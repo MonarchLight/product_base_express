@@ -28,8 +28,9 @@ export const addProduct = async (isActive, image, name, count, weightPerItem, pr
     if (image) {
         image = await reqImage(image);
     }
-    const imageMainUrl = image.split("upload/")[0] + "upload/";
-    const imageLocation = image.split("upload/")[1];
+    // const imageMainUrl = image.split("upload/")[0] + "upload/";
+    // const imageLocation = image.split("upload/")[1];
+
 
     //console.log(`${imageMainUrl}c_thumb,h_200,w_200/${imageLocation}`);
 
