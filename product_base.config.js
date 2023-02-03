@@ -2,7 +2,7 @@ const env = {
     NODE_ENV: 'development',
 }
 
-module.exports = {
+export const pm2 = {
     apps: [
         {
             env,
