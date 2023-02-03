@@ -95,9 +95,6 @@ router.post('/product', [
     check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').matches(/^\d+(?:\.\d{1,2})?$/),
     check('description', '`Description` must be string.').optional().isString(),
 ], controller.addProduct)
-    .get('/', (req, res) => {
-        return res.sendFile('../doc/index.html')
-    })
 
     /** /api/product/:id Update product
     * @api {put} /api/product/:id Update product
