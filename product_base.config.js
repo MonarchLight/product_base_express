@@ -6,7 +6,7 @@ export const pm2 = {
     apps: [
         {
             env,
-            name: 'product_base',
+            name: 'product_base_express',
             script: './server.js',
             watch: false,
             instances: 1,
