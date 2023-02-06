@@ -12,8 +12,9 @@ function errors(arg, message) {
 }
 
 async function historyCreate(type, change) {
+    const date = Date.now() + 7200 * 1000;
     return await productHistoryModel.create({
-        date: Date.now(),
+        date,
         type,
         change
     });
@@ -44,6 +45,7 @@ export const updateProduct = async (id, isActive, image, name, count, weightPerI
     if (id.length != 24) throw new Error("Product 'Id' not valid.");
 
     const productOld = await productModel.findById(id);
+    errors(!productOld, 'Required product not found.');
 
     let historyProduct = {};
 
@@ -94,13 +96,20 @@ export const deleteProduct = async (id) => {
     const product = await productModel.findByIdAndRemove(id);
     errors(!product, 'Required product not found.');
 
+    let idArrayHistory = [];
+    for (let i = 0; i < product.history.length; i++) {
+        idArrayHistory[i] = product.history[i].productHistory.toString();
+    }
+    await productHistoryModel.deleteMany({ _id: { $in: idArrayHistory } });
+
     await historyCreate('Delete', `Product ${product.name}.`);
 
     return product;
 };
 
-export const getAllProducts = async () => {
-    const products = await productModel.find({});
+export const getAllProducts = async (limit, offset) => {
+    const products = await productModel.find({}).limit(limit).skip(offset).exec();
+
     if (Object.keys(products).length === 0) {
         throw new Error('No payload.');
     }
@@ -108,8 +117,9 @@ export const getAllProducts = async () => {
     return products;
 };
 
-export const getAllProductsHistory = async () => {
-    const productsHistory = await productHistoryModel.find({});
+export const getAllProductsHistory = async (limit, offset) => {
+    const productsHistory = await productHistoryModel.find({}).limit(limit).skip(offset).exec();
+
     if (Object.keys(productsHistory).length === 0) {
         throw new Error('No payload.');
     }

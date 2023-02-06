@@ -1,7 +1,7 @@
 "use strict";
 
 export const errorMiddlewares = (error, req, res, next) => {
-    //console.log(error);
+
     if (error instanceof Error) {
 
         return res.status(400).json({ status: false, errors: { message: error.message }, payload: null });

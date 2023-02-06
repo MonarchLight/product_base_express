@@ -57,7 +57,10 @@ export const deleteProduct = async (req, res, next) => {
 
 export const getAllProducts = async (req, res, next) => {
     try {
-        const products = await productService.getAllProducts();
+        const limit = req.query.limit;
+        const offset = req.query.offset;
+
+        const products = await productService.getAllProducts(limit, offset);
 
         return res.status(201).json({ status: true, error: null, payload: products });
     } catch (error) {
@@ -67,7 +70,10 @@ export const getAllProducts = async (req, res, next) => {
 
 export const getAllProductsHistory = async (req, res, next) => {
     try {
-        const products = await productService.getAllProductsHistory();
+        const limit = req.query.limit;
+        const offset = req.query.offset;
+
+        const products = await productService.getAllProductsHistory(limit, offset);
 
         return res.status(201).json({ status: true, error: null, payload: products });
     } catch (error) {

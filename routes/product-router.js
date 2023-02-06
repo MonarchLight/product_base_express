@@ -16,13 +16,13 @@ const router = new Router();
  * @apiGroup Product
  * @apiDescription Add product
  *
- * @apiBody {Boolean} isActive Switches, optional. (default: false)
- * @apiBody {String} image Photo URL, optional. (default: "")
+ * @apiBody {Boolean} [isActive] Switches. (default: false)
+ * @apiBody {String} [image] Photo URL. (default: "")
  * @apiBody {String} name Product name (unique, require)
  * @apiBody {Number} count Аmount (require)
  * @apiBody {Number} weightPerItem Unit weight (require)
  * @apiBody {Number} pricePerItem Unit price (require)
- * @apiBody {String} description Description, optional. (default: "")
+ * @apiBody {String} [description] Description. (default: "")
  *
  * @apiSuccess {json} Object Object with status, errors[{}], payload
  * @apiSuccessExample {json} Success-Response:
@@ -103,14 +103,14 @@ router.post('/product', [
     * @apiGroup Product
     * @apiDescription Update product
     *
-    * @apiParam {String} id The product ID to update
-    * @apiBody {Boolean} isActive Switches, optional. (default: false)
-    * @apiBody {String} image Photo URL, optional. (default: "")
-    * @apiBody {String} name Product name optional. (unique)
-    * @apiBody {Number} count Аmount optional.
-    * @apiBody {Number} weightPerItem Unit weight optional.
-    * @apiBody {Number} pricePerItem Unit price optional.
-    * @apiBody {String} description Description, optional. (default: "")
+    * @apiParam {String} [id] The product ID to update
+    * @apiBody {Boolean} [isActive] Switches. (default: false)
+    * @apiBody {String} [image] Photo URL. (default: "")
+    * @apiBody {String} [name] Product name. (unique)
+    * @apiBody {Number} [count] Аmount.
+    * @apiBody {Number} [weightPerItem] Unit weight.
+    * @apiBody {Number} [pricePerItem] Unit price.
+    * @apiBody {String} [description] Description. (default: "")
     *
     * @apiSuccess {json} Object Object with status, errors[{}], payload
     * @apiSuccessExample {json} Success-Response:
@@ -171,6 +171,9 @@ router.post('/product', [
     * @apiGroup Product
     * @apiDescription Get all product history
     *
+    * @apiParam {Integer} [limit] Limit the number of results returned. (0 - all items)
+    * @apiParam {Integer} [offset] Offset specifies skipping the specified number of lines before starting to output lines.
+    * 
     * @apiSuccess {json} Object Object with status, errors[{}], payload
     * @apiSuccessExample {json} Success-Response:
        HTTP/1.1 201 OK
@@ -209,11 +212,14 @@ router.post('/product', [
     .get('/product/history', controller.getAllProductsHistory)
 
     /** /api/product Get all product
-    * @api {get} /api/product Get all product
+    * @api {get} /api/product?limit=0&offset=0 Get all product
     * @apiVersion 1.0.0
     * @apiName GetProduct
     * @apiGroup Product
     * @apiDescription Get all product
+    * 
+    * @apiParam {Integer} [limit] Limit the number of results returned. (0 - all items)
+    * @apiParam {Integer} [offset] Offset specifies skipping the specified number of lines before starting to output lines.
     *
     * @apiSuccess {json} Object Object with status, errors[{}], payload
     * @apiSuccessExample {json} Success-Response:
