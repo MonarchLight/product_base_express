@@ -90,7 +90,7 @@ router.post('/product', [
     check('isActive', '`Active` must be true or false.').optional().isBoolean(),
     check('image', '`Image` must be string.').optional().isString(),
     check('name', '`Name` can not be empty.').isString().notEmpty(),
-    check('count', '`Count` must be integer.').isInt({ gt: 0 }),
+    check('count', '`Count` must be integer.').isInt({ gt: -1 }),
     check('weightPerItem', '`Weight` must be no more than 3 characters after the dot.').matches(/^\d+(?:\.\d{1,3})?$/),
     check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').matches(/^\d+(?:\.\d{1,2})?$/),
     check('description', '`Description` must be string.').optional().isString(),
@@ -158,14 +158,14 @@ router.post('/product', [
         check('isActive', '`Active` must be true or false.').optional().isBoolean(),
         check('image', '`Image` must be string.').optional().isString(),
         check('name', '`Name` can not be empty.').optional().isString().notEmpty(),
-        check('count', '`Count` must be integer.').optional().isInt({ gt: 0 }),
+        check('count', '`Count` must be integer.').optional().isInt({ gt: -1 }),
         check('weightPerItem', '`Weight` must be no more than 3 characters after the dot.').optional().matches(/^\d+(?:\.\d{1,3})?$/),
         check('pricePerItem', '`Price` must be no more than 2 characters after the dot.').optional().matches(/^\d+(?:\.\d{1,2})?$/),
         check('description', '`Description` must be string.').optional().isString(),
     ], controller.updateProduct)
 
     /** /api/product/history Get all product history
-    * @api {get} /api/product/history Get all product history
+    * @api {get} /api/product/history?limit=0&offset=0 Get all product history
     * @apiVersion 1.0.0
     * @apiName GetProductHistory
     * @apiGroup Product

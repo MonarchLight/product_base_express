@@ -21,10 +21,10 @@ async function historyCreate(type, change) {
 }
 
 export const addProduct = async (isActive, image, name, count, weightPerItem, pricePerItem, description) => {
+    name = name[0].toUpperCase() + name.substring(1);
+
     const nameProduct = await productModel.findOne({ name });
     errors(nameProduct, 'You already have this product.');
-
-    name = name[0].toUpperCase() + name.substring(1);
 
     if (image) {
         image = await reqImage(image);
@@ -108,6 +108,9 @@ export const deleteProduct = async (id) => {
 };
 
 export const getAllProducts = async (limit, offset) => {
+
+    if (limit == 0) return [];
+
     const products = await productModel.find({}).limit(limit).skip(offset).exec();
 
     if (Object.keys(products).length === 0) {
