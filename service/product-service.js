@@ -60,7 +60,7 @@ export const updateProduct = async (id, isActive, image, name, count, weightPerI
         let stringHistoryProduct = "";
 
         function editHistoryProduct(newParams, oldParams, error, message) {
-            if (newParams) {
+            if (newParams !== undefined) {
                 if (newParams == oldParams) {
                     throw new Error(error);
                 }
