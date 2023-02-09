@@ -18,7 +18,9 @@ const app = express();
 
 app.use(express.json());
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+    origin: ['https://cloudinary.com']
+}));
 app.use('/api', router);
 
 app.use(errorMiddlewares);
