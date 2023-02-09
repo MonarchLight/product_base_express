@@ -42,6 +42,7 @@ export const addProduct = async (isActive, image, name, count, weightPerItem, pr
 };
 
 export const updateProduct = async (id, isActive, image, name, count, weightPerItem, pricePerItem, description) => {
+    name = name[0].toUpperCase() + name.substring(1);
     if (id.length != 24) throw new Error("Product 'Id' not valid.");
 
     const productOld = await productModel.findById(id);
@@ -62,7 +63,8 @@ export const updateProduct = async (id, isActive, image, name, count, weightPerI
         function editHistoryProduct(newParams, oldParams, error, message) {
             if (newParams !== undefined) {
                 if (newParams == oldParams) {
-                    throw new Error(error);
+                    return oldParams;
+                    //throw new Error(error);
                 }
                 stringHistoryProduct = stringHistoryProduct === "" ?
                     `Product ${productOld.name}: ` + message :
