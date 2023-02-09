@@ -42,7 +42,7 @@ export const addProduct = async (isActive, image, name, count, weightPerItem, pr
 };
 
 export const updateProduct = async (id, isActive, image, name, count, weightPerItem, pricePerItem, description) => {
-    name = name[0].toUpperCase() + name.substring(1);
+    if (name) name = name[0].toUpperCase() + name.substring(1);
     if (id.length != 24) throw new Error("Product 'Id' not valid.");
 
     const productOld = await productModel.findById(id);
