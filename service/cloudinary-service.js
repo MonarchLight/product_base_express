@@ -19,11 +19,12 @@ const uploadImage = async (imagePath) => {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
+        timeout: 60 * 1000,
     };
 
     try {
         // Upload the image
-        const result = await cloudinary.uploader.upload(imagePath, options);
+        const result = await cloudinary.uploader.upload(imagePath, options, (err) => { console.log(err); });
         //console.log(result);
         return result.url;
     } catch (error) {
